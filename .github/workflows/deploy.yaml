@@ -43,9 +43,10 @@ jobs:
         run: |        
           ssh -i /tmp/private_key.pem $USER@$HOST "\
           cd ~/app \
-          && (docker ps -q | xargs -r docker container rm -f ) \
-          && (docker images -q | xargs -r docker rmi -f) \
-          && docker docker run -d --rm -p 80:80 --env RULESET=https://t.ly/14PSf --name ladder ghcr.io/everywall/ladder:latest"
+          && (docker ps -q --filter name=ladder | xargs -r docker container rm -f ) \
+          && (docker images -q ladder | xargs -r docker rmi -f) \
+          && docker build -t ladder . \
+          && docker run -p 8080:8080 -d --env RULESET=https://t.ly/14PSf --name ladder ladder:latest"
 
       - name: Cleanup
         env:
