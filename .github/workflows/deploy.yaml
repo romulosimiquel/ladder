@@ -30,18 +30,18 @@ jobs:
 
       - name: Copy repository files to EC2
         env:
-          HOST: $\{{ secrets.HOST }}
+          HOST: $\{{ 54.184.23.208 }}
           USER: $\{{ secrets.USER }}
         run: |
-          ssh -i /tmp/private_key.pem $USER@$HOST "mkdir -p ~/app"
-          scp -i /tmp/private_key.pem -r ./* $USER@$HOST:~/app
+          ssh -i /tmp/private_key.pem $USER@54.184.23.208 "mkdir -p ~/app"
+          scp -i /tmp/private_key.pem -r ./* $USER@54.184.23.208:~/app
 
       - name: Build Docker image and run container on EC2
         env:
-          HOST: $\{{ secrets.HOST }}
+          HOST: $\{{ 54.184.23.208 }}
           USER: $\{{ secrets.USER }}
         run: |        
-          ssh -i /tmp/private_key.pem $USER@$HOST "\
+          ssh -i /tmp/private_key.pem $USER@54.184.23.208 "\
           cd ~/app \
           && (docker ps -q | xargs -r docker container rm -f ) \
           && (docker images -q | xargs -r docker rmi -f) \
@@ -49,8 +49,8 @@ jobs:
 
       - name: Cleanup
         env:
-          HOST: $\{{ secrets.HOST }}
+          HOST: $\{{ 54.184.23.208 }}
           USER: $\{{ secrets.USER }}
         run: |
-          ssh -i /tmp/private_key.pem $USER@$HOST "rm -rf ~/app"
+          ssh -i /tmp/private_key.pem $USER@54.184.23.208 "rm -rf ~/app"
           rm -f /tmp/private_key.pem
