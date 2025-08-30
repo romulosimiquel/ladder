@@ -18,7 +18,7 @@ RUN chmod +x /app/ladder
 
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
-#EXPOSE 8080
+EXPOSE 80
 
 #ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 

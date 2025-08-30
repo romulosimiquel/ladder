@@ -7,7 +7,7 @@ services:
     #restart: always
     #command: sh -c ./ladder
     environment:
-      - PORT=8080
+      - PORT=80
       - RULESET=/app/ruleset.yaml
       #- ALLOWED_DOMAINS=example.com,example.org
       #- ALLOWED_DOMAINS_RULESET=false
@@ -21,7 +21,7 @@ services:
       #- LOG_URLS=true
       #- GODEBUG=netdns=go
     ports:
-      - "8080:8080"
+      - "80:80"
     volumes:
       - ./ruleset.yaml:/app/ruleset.yaml
       - ./handlers/form.html:/app/form.html
