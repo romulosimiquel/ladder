@@ -7,7 +7,7 @@ services:
     #restart: always
     #command: sh -c ./ladder
     environment:
-      - PORT=80
+      - PORT=8080
       - RULESET=/app/ruleset.yaml
       #- ALLOWED_DOMAINS=example.com,example.org
       #- ALLOWED_DOMAINS_RULESET=false

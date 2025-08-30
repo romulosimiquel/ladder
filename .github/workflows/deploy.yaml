@@ -28,25 +28,15 @@ jobs:
           echo "$PRIVATE_KEY" > /tmp/private_key.pem
           chmod 600 /tmp/private_key.pem
 
-      - name: Copy repository files to EC2
-        env:
-          HOST: ${{ secrets.HOST }}
-          USER: ${{ secrets.USER }}
-        run: |
-          ssh -i /tmp/private_key.pem $USER@$HOST "mkdir -p ~/app"
-          scp -i /tmp/private_key.pem -r ./* $USER@$HOST:~/app
-
-      - name: Build Docker image and run container on EC2
+      - name: Deploy container on EC2
         env:
           HOST: ${{ secrets.HOST }}
           USER: ${{ secrets.USER }}
         run: |        
           ssh -i /tmp/private_key.pem $USER@$HOST "\
-          cd ~/app \
-          && (docker ps -q --filter name=ladder | xargs -r docker container rm -f ) \
-          && (docker images -q ladder | xargs -r docker rmi -f) \
-          && docker build -t ladder . \
-          && docker run -p 8080:8080 -d --env RULESET=https://t.ly/14PSf --name ladder ladder:latest"
+          (docker ps -q | xargs -r docker container rm -f ) \
+          && (docker images -q | xargs -r docker rmi -f) \
+          && docker run -p 8080:8080 -d --env RULESET=https://t.ly/14PSf --name ladder ghcr.io/everywall/ladder:latest"
 
       - name: Cleanup
         env:
