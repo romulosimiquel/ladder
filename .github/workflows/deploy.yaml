@@ -15,7 +15,7 @@ jobs:
 
       - name: Add EC2 instance to known_hosts
         env:
-          PUBLIC_KEY: $\{{ secrets.PUBLIC_KEY }}
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
@@ -23,34 +23,34 @@ jobs:
 
       - name: Setting private key
         env:
-          PRIVATE_KEY: $\{{ secrets.DEPLOY_KEY }}
+          PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
           echo "$PRIVATE_KEY" > /tmp/private_key.pem
           chmod 600 /tmp/private_key.pem
 
       - name: Copy repository files to EC2
         env:
-          HOST: $\{{ 54.184.23.208 }}
-          USER: $\{{ secrets.USER }}
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
         run: |
-          ssh -i /tmp/private_key.pem $USER@54.184.23.208 "mkdir -p ~/app"
-          scp -i /tmp/private_key.pem -r ./* $USER@54.184.23.208:~/app
+          ssh -i /tmp/private_key.pem $USER@$HOST "mkdir -p ~/app"
+          scp -i /tmp/private_key.pem -r ./* $USER@$HOST:~/app
 
       - name: Build Docker image and run container on EC2
         env:
-          HOST: $\{{ 54.184.23.208 }}
-          USER: $\{{ secrets.USER }}
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
         run: |        
-          ssh -i /tmp/private_key.pem $USER@54.184.23.208 "\
+          ssh -i /tmp/private_key.pem $USER@$HOST "\
           cd ~/app \
           && (docker ps -q | xargs -r docker container rm -f ) \
           && (docker images -q | xargs -r docker rmi -f) \
-          && docker run -p 8080:8080 -d --env RULESET=https://t.ly/14PSf --name ladder ghcr.io/everywall/ladder:latest
+          && docker run -p 8080:8080 -d --env RULESET=https://t.ly/14PSf --name ladder ghcr.io/everywall/ladder:latest"
 
       - name: Cleanup
         env:
-          HOST: $\{{ 54.184.23.208 }}
-          USER: $\{{ secrets.USER }}
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
         run: |
-          ssh -i /tmp/private_key.pem $USER@54.184.23.208 "rm -rf ~/app"
+          ssh -i /tmp/private_key.pem $USER@$HOST "rm -rf ~/app"
           rm -f /tmp/private_key.pem
